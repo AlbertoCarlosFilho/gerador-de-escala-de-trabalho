@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Gestão de Equipe</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;min-height:100vh;}
+
+/* HEADER */
+header{background:#1a1a2e;color:#fff;padding:0 32px;height:60px;display:flex;align-items:center;gap:14px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:32px;height:32px;background:#4a6cf7;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo-texto h1{font-size:16px;font-weight:600;letter-spacing:-.01em;}
+.logo-texto span{font-size:11px;opacity:.5;display:block;margin-top:1px;}
+nav{margin-left:auto;display:flex;gap:6px;}
+nav a{color:rgba(255,255,255,.6);font-size:13px;text-decoration:none;padding:6px 12px;border-radius:6px;transition:all .15s;}
+nav a:hover{background:rgba(255,255,255,.08);color:#fff;}
+
+/* HERO */
+.hero{background:#1a1a2e;color:#fff;padding:52px 32px 60px;text-align:center;}
+.hero h2{font-size:30px;font-weight:600;letter-spacing:-.02em;margin-bottom:10px;}
+.hero p{font-size:15px;opacity:.6;max-width:480px;margin:0 auto;}
+
+/* CONTAINER */
+.container{max-width:900px;margin:0 auto;padding:0 20px;}
+
+/* CARDS DE MÓDULOS */
+.modulos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:-32px;padding-bottom:48px;}
+
+.modulo-card{background:#fff;border:1px solid #e8e8e4;border-radius:14px;padding:24px;text-decoration:none;color:inherit;transition:all .18s;display:flex;flex-direction:column;gap:14px;}
+.modulo-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.07);border-color:#c8c8c4;}
+.modulo-card.desativado{opacity:.55;cursor:default;pointer-events:none;}
+
+.mod-icone{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mod-header{display:flex;align-items:center;gap:12px;}
+.mod-nome{font-size:15px;font-weight:600;}
+.mod-desc{font-size:13px;color:#777;line-height:1.55;}
+.mod-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;}
+.mod-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;}
+.badge-ativo{background:#e1f5ee;color:#0f6e56;}
+.badge-breve{background:#faeeda;color:#854f0b;}
+.mod-seta{font-size:18px;color:#ccc;transition:color .15s;}
+.modulo-card:hover .mod-seta{color:#4a6cf7;}
+
+/* SEÇÃO INFO */
+.info-section{background:#fff;border:1px solid #e8e8e4;border-radius:14px;padding:28px 32px;margin-bottom:48px;}
+.info-section h3{font-size:14px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:18px;}
+.steps{display:flex;flex-direction:column;gap:14px;}
+.step{display:flex;align-items:flex-start;gap:14px;}
+.step-num{width:28px;height:28px;border-radius:50%;background:#e6f1fb;color:#185fa5;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-texto strong{font-size:14px;display:block;margin-bottom:2px;}
+.step-texto span{font-size:13px;color:#777;}
+
+/* FOOTER */
+footer{border-top:1px solid #e8e8e4;padding:20px 32px;text-align:center;font-size:12px;color:#bbb;}
+
+/* RESPONSIVO */
+@media(max-width:600px){
+  .hero h2{font-size:22px;}
+  nav{display:none;}
+  header{padding:0 16px;}
+  .container{padding:0 12px;}
+  .info-section{padding:20px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div class="logo-texto">
+      <h1>GestãoEquipe</h1>
+      <span>Sistema de gestão de pessoas</span>
+    </div>
+  </div>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="escala_trabalho.html">Escala</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <h2>Gerencie sua equipe com simplicidade</h2>
+  <p>Ferramentas práticas para escala, controle de presença e muito mais.</p>
+</div>
+
+<div class="container">
+
+  <div class="modulos-grid">
+
+    <!-- MÓDULO 1 — ESCALA (ativo) -->
+    <a href="escala_trabalho.html" class="modulo-card">
+      <div class="mod-header">
+        <div class="mod-icone" style="background:#e6f1fb;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185fa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <span class="mod-nome">Escala de Trabalho</span>
+      </div>
+      <p class="mod-desc">Gere escalas para turnos Segunda–Sexta e Plantão 12x36. Visualize até 6 meses e imprima em PDF.</p>
+      <div class="mod-footer">
+        <span class="mod-badge badge-ativo">Disponível</span>
+        <span class="mod-seta">→</span>
+      </div>
+    </a>
+
+    <!-- MÓDULO 2 — CONTROLE DE PRESENÇA (em breve) -->
+    <div class="modulo-card desativado">
+      <div class="mod-header">
+        <div class="mod-icone" style="background:#faeeda;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#854f0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <span class="mod-nome">Controle de Presença</span>
+      </div>
+      <p class="mod-desc">Registre faltas, atrasos e justificativas. Relatório mensal de frequência por funcionário.</p>
+      <div class="mod-footer">
+        <span class="mod-badge badge-breve">Em breve</span>
+      </div>
+    </div>
+
+    <!-- MÓDULO 3 — FÉRIAS (em breve) -->
+    <div class="modulo-card desativado">
+      <div class="mod-header">
+        <div class="mod-icone" style="background:#e1f5ee;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <span class="mod-nome">Gestão de Férias</span>
+      </div>
+      <p class="mod-desc">Planeje e controle o período de férias de cada funcionário com visualização anual.</p>
+      <div class="mod-footer">
+        <span class="mod-badge badge-breve">Em breve</span>
+      </div>
+    </div>
+
+    <!-- MÓDULO 4 — RELATÓRIOS (em breve) -->
+    <div class="modulo-card desativado">
+      <div class="mod-header">
+        <div class="mod-icone" style="background:#eeedfe;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#534ab7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <span class="mod-nome">Relatórios</span>
+      </div>
+      <p class="mod-desc">Totais de horas trabalhadas, horas extras e resumo mensal exportável para Excel.</p>
+      <div class="mod-footer">
+        <span class="mod-badge badge-breve">Em breve</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMO USAR -->
+  <div class="info-section">
+    <h3>Como usar a escala</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-texto">
+          <strong>Cadastre os funcionários</strong>
+          <span>Informe o nome, o tipo de escala (Seg–Sex ou Plantão 12x36) e, para plantão, a data de início e o turno.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-texto">
+          <strong>Escolha o período</strong>
+          <span>Selecione o mês inicial, o ano e quantos meses deseja gerar — de 1 até 6 meses de uma vez.</span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-texto">
+          <strong>Gere e imprima</strong>
+          <span>Clique em "Gerar Escala" para visualizar o calendário completo com resumo de dias e horas. Use "Imprimir / Salvar PDF" para distribuir à equipe.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  GestãoEquipe &mdash; desenvolvido para uso interno &mdash; <span id="ano"></span>
+</footer>
+
+<script>
+  document.getElementById('ano').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
