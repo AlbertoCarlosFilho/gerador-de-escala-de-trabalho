@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Escala de Trabalho</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;min-height:100vh;}
+header{background:#1a1a2e;color:#fff;padding:18px 24px;display:flex;align-items:center;gap:12px;}
+header h1{font-size:18px;font-weight:500;}
+header span{font-size:13px;opacity:.6;margin-left:auto;}
+.container{max-width:980px;margin:0 auto;padding:24px 16px;}
+.card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:20px 24px;margin-bottom:20px;}
+.card h2{font-size:13px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;}
+.form-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-end;}
+.field{flex:1;min-width:130px;}
+.field label{font-size:12px;color:#888;display:block;margin-bottom:5px;}
+input[type=text],input[type=date],input[type=number],select{width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;color:#1a1a1a;background:#fafaf8;}
+input:focus,select:focus{outline:none;border-color:#4a6cf7;background:#fff;}
+.btn{padding:9px 18px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:all .15s;}
+.btn-primary{background:#4a6cf7;color:#fff;}
+.btn-primary:hover{background:#3a5ce6;}
+.btn-danger{background:#fff;color:#e24b4a;border:1px solid #f0b0b0;font-size:12px;padding:6px 12px;}
+.btn-danger:hover{background:#fff0f0;}
+.btn-outline{background:#fff;color:#4a6cf7;border:1px solid #c0ccfa;}
+.btn-outline:hover{background:#f0f3ff;}
+.btn-success{background:#1d9e75;color:#fff;}
+.btn-success:hover{background:#178864;}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.func-list{display:flex;flex-direction:column;gap:8px;}
+.func-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fafaf8;border:1px solid #eee;border-radius:8px;}
+.func-nome{font-size:14px;font-weight:500;flex:1;}
+.func-tipo{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;}
+.tipo-seg{background:#e6f1fb;color:#185fa5;}
+.tipo-plan{background:#e1f5ee;color:#0f6e56;}
+.func-detalhe{font-size:12px;color:#888;}
+.empty-state{text-align:center;padding:32px;color:#aaa;font-size:14px;}
+
+/* ESCALA MENSAL */
+.mes-bloco{margin-bottom:32px;}
+.mes-titulo{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #e8e8e4;}
+.cal-wrap{overflow-x:auto;}
+.cal-table{width:100%;border-collapse:collapse;min-width:500px;font-size:12px;}
+.cal-table th{background:#164731;color:#fff;padding:7px 4px;font-weight:500;text-align:center;font-size:11px;}
+.cal-table th.col-nome{text-align:left;min-width:130px;padding-left:10px;}
+.cal-table td{padding:5px 3px;text-align:center;border-bottom:1px solid #f0f0ec;vertical-align:middle;}
+.cal-table td.col-nome{text-align:left;padding-left:10px;font-weight:500;font-size:12px;white-space:nowrap;}
+.cal-table tr:hover td{background:#fafaf8;}
+.cal-table tr:last-child td{border-bottom:none;}
+.th-fds{background:#06a03a !important;}
+.th-dia .num{font-size:12px;font-weight:600;display:block;}
+.th-dia .dsem{font-size:10px;opacity:.7;}
+.dia-cell{width:24px;height:24px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin:0 auto;}
+.dia-T{background:#4a6cf7;color:#fff;}
+.dia-T-fds{background:#ef9f27;color:#fff;}
+.dia-F{background:#f0f0ec;color:#ccc;}
+.dia-F-fds{background:#fafaf8;color:#ddd;}
+.func-tag{font-size:10px;color:#aaa;display:block;font-weight:400;}
+
+/* RESUMO */
+.resumo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:6px;}
+.resumo-card{background:#fafaf8;border:1px solid #eee;border-radius:8px;padding:12px 14px;}
+.resumo-card .r-nome{font-size:12px;color:#888;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.resumo-card .r-dias{font-size:22px;font-weight:600;color:#1a1a2e;}
+.resumo-card .r-horas{font-size:11px;color:#aaa;margin-top:1px;}
+
+.legenda{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#666;}
+.leg-cor{width:13px;height:13px;border-radius:3px;flex-shrink:0;}
+
+.config-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+.qtd-meses-sel{display:flex;gap:8px;flex-wrap:wrap;}
+.qtd-btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #ddd;background:#fafaf8;color:#555;transition:all .15s;}
+.qtd-btn:hover{border-color:#4a6cf7;color:#4a6cf7;}
+.qtd-btn.ativo{background:#4a6cf7;color:#fff;border-color:#4a6cf7;}
+
+/* PRINT */
+@media print{
+  header{background:#1a1a2e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .no-print{display:none !important;}
+  .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid;}
+  .mes-bloco{break-inside:avoid;page-break-inside:avoid;}
+  .dia-T{background:#4a6cf7 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .dia-T-fds{background:#ef9f27 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cal-table th{background:#1a1a2e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .th-fds{background:#2e2e4e !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  <h1>Gerador de Escala de Trabalho</h1>
+  <span id="data-atual"></span>
+</header>
+
+<div class="container">
+
+  <!-- FUNCIONÁRIOS -->
+  <div class="card no-print">
+    <h2>Funcionários</h2>
+    <div class="form-row">
+      <div class="field">
+        <label>Nome</label>
+        <input type="text" id="inp-nome" placeholder="Ex: João Silva" />
+      </div>
+      <div class="field">
+        <label>Tipo de escala</label>
+        <select id="inp-tipo" onchange="toggleCamposPlantao()">
+          <option value="seg-sex">Segunda a Sexta</option>
+          <option value="plantao">Plantão 12x36</option>
+        </select>
+      </div>
+      <div class="field" id="wrap-inicio" style="display:none">
+        <label>Início do plantão</label>
+        <input type="date" id="inp-inicio" />
+      </div>
+      <div class="field" id="wrap-turno" style="display:none">
+        <label>Turno</label>
+        <select id="inp-turno">
+          <option value="dia">Dia (07h–19h)</option>
+          <option value="noite">Noite (19h–07h)</option>
+        </select>
+      </div>
+      <div class="field" style="display:flex;align-items:flex-end;">
+        <button class="btn btn-primary" style="width:100%" onclick="adicionarFunc()">+ Adicionar</button>
+      </div>
+    </div>
+    <div id="lista-func">
+      <div class="empty-state">Nenhum funcionário ainda. Adicione acima.</div>
+    </div>
+  </div>
+
+  <!-- CONFIGURAR GERAÇÃO -->
+  <div class="card no-print">
+    <h2>Gerar Escala</h2>
+    <div class="config-row">
+      <div class="field">
+        <label>Mês inicial</label>
+        <select id="sel-mes">
+          <option value="0">Janeiro</option><option value="1">Fevereiro</option>
+          <option value="2">Março</option><option value="3">Abril</option>
+          <option value="4">Maio</option><option value="5">Junho</option>
+          <option value="6">Julho</option><option value="7">Agosto</option>
+          <option value="8">Setembro</option><option value="9">Outubro</option>
+          <option value="10">Novembro</option><option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ano</label>
+        <input type="number" id="inp-ano" value="2025" min="2024" max="2030" />
+      </div>
+      <div class="field">
+        <label>Quantidade de meses</label>
+        <div class="qtd-meses-sel" id="qtd-meses-sel">
+          <button class="qtd-btn ativo" onclick="selecionarQtd(this,1)">1</button>
+          <button class="qtd-btn" onclick="selecionarQtd(this,2)">2</button>
+          <button class="qtd-btn" onclick="selecionarQtd(this,3)">3</button>
+          <button class="qtd-btn" onclick="selecionarQtd(this,4)">4</button>
+          <button class="qtd-btn" onclick="selecionarQtd(this,5)">5</button>
+          <button class="qtd-btn" onclick="selecionarQtd(this,6)">6</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn btn-success" onclick="gerarEscala()">Gerar Escala</button>
+      <button class="btn btn-outline" onclick="window.print()">Imprimir / Salvar PDF</button>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div id="resultado" style="display:none;">
+
+    <div class="card" id="card-escalas">
+      <h2 id="titulo-resultado"></h2>
+      <div id="blocos-meses"></div>
+      <div class="legenda">
+        <div class="leg-item"><div class="leg-cor" style="background:#4a6cf7"></div>Trabalho (dia útil)</div>
+        <div class="leg-item"><div class="leg-cor" style="background:#ef9f27"></div>Plantão (fim de semana)</div>
+        <div class="leg-item"><div class="leg-cor" style="background:#f0f0ec"></div>Folga</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="titulo-resumo">Resumo</h2>
+      <div id="blocos-resumo"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MESES_NOMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+let funcionarios = [];
+let qtdMeses = 1;
+
+const agora = new Date();
+document.getElementById('data-atual').textContent = agora.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+document.getElementById('sel-mes').value = agora.getMonth();
+document.getElementById('inp-ano').value = agora.getFullYear();
+document.getElementById('inp-inicio').value = agora.toISOString().split('T')[0];
+
+function toggleCamposPlantao(){
+  const p = document.getElementById('inp-tipo').value === 'plantao';
+  document.getElementById('wrap-inicio').style.display = p ? '' : 'none';
+  document.getElementById('wrap-turno').style.display = p ? '' : 'none';
+}
+
+function selecionarQtd(btn, n){
+  document.querySelectorAll('.qtd-btn').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  qtdMeses = n;
+}
+
+function adicionarFunc(){
+  const nome = document.getElementById('inp-nome').value.trim();
+  const tipo = document.getElementById('inp-tipo').value;
+  const inicio = document.getElementById('inp-inicio').value;
+  const turno = document.getElementById('inp-turno').value;
+  if(!nome){ alert('Informe o nome do funcionário.'); return; }
+  if(tipo==='plantao' && !inicio){ alert('Informe a data de início do plantão.'); return; }
+  funcionarios.push({id:Date.now(), nome, tipo, inicio: tipo==='plantao'?inicio:null, turno: tipo==='plantao'?turno:null});
+  renderLista();
+  document.getElementById('inp-nome').value='';
+  document.getElementById('inp-nome').focus();
+}
+
+function removerFunc(id){
+  funcionarios = funcionarios.filter(f=>f.id!==id);
+  renderLista();
+}
+
+function renderLista(){
+  const el = document.getElementById('lista-func');
+  if(!funcionarios.length){ el.innerHTML='<div class="empty-state">Nenhum funcionário ainda. Adicione acima.</div>'; return; }
+  el.innerHTML = '<div class="func-list">'+funcionarios.map(f=>`
+    <div class="func-item">
+      <span class="func-nome">${f.nome}</span>
+      <span class="func-tipo ${f.tipo==='seg-sex'?'tipo-seg':'tipo-plan'}">${f.tipo==='seg-sex'?'Seg–Sex':'Plantão 12x36'}</span>
+      ${f.turno?`<span class="func-detalhe">${f.turno==='dia'?'07h–19h':'19h–07h'}</span>`:''}
+      ${f.inicio?`<span class="func-detalhe">desde ${fmt(f.inicio)}</span>`:''}
+      <button class="btn btn-danger btn-sm" onclick="removerFunc(${f.id})">Remover</button>
+    </div>`).join('')+'</div>';
+}
+
+function fmt(str){ const[y,m,d]=str.split('-'); return `${d}/${m}/${y}`; }
+
+function ePlantao(func, data){
+  if(func.tipo!=='plantao') return false;
+  const inicio = new Date(func.inicio+'T00:00:00');
+  const alvo = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+  const diff = Math.round((alvo - inicio)/86400000);
+  if(diff < 0) return false;
+  return diff % 2 === 0;
+}
+
+function gerarEscala(){
+  if(!funcionarios.length){ alert('Adicione pelo menos um funcionário.'); return; }
+  const mesInicio = parseInt(document.getElementById('sel-mes').value);
+  const anoInicio = parseInt(document.getElementById('inp-ano').value);
+
+  let htmlBlocos = '';
+  let htmlResumos = '';
+
+  // Totais acumulados por funcionário para o resumo final
+  const totais = {};
+  funcionarios.forEach(f => { totais[f.id] = 0; });
+
+  for(let m = 0; m < qtdMeses; m++){
+    let mes = (mesInicio + m) % 12;
+    let ano = anoInicio + Math.floor((mesInicio + m) / 12);
+    const totalDias = new Date(ano, mes+1, 0).getDate();
+
+    // Cabeçalho da tabela
+    let thead = '<tr><th class="col-nome">Funcionário</th>';
+    for(let d=1; d<=totalDias; d++){
+      const dt = new Date(ano, mes, d);
+      const ds = dt.getDay();
+      const fds = ds===0||ds===6;
+      thead += `<th class="${fds?'th-fds':''}"><div class="th-dia"><span class="num">${d}</span><span class="dsem">${DIAS_SEMANA[ds]}</span></div></th>`;
+    }
+    thead += '</tr>';
+
+    // Linhas por funcionário
+    let tbody = '';
+    const diasMes = {};
+    funcionarios.forEach(f => { diasMes[f.id] = 0; });
+
+    funcionarios.forEach(func => {
+      let row = `<tr><td class="col-nome">${func.nome}<span class="func-tag">${func.tipo==='seg-sex'?'Seg–Sex':'Plantão'+(func.turno?(' '+(func.turno==='dia'?'dia':'noite')):'')}</span></td>`;
+      for(let d=1; d<=totalDias; d++){
+        const dt = new Date(ano, mes, d);
+        const ds = dt.getDay();
+        const fds = ds===0||ds===6;
+        let trabalha = false;
+        if(func.tipo==='seg-sex') trabalha = ds>=1&&ds<=5;
+        else trabalha = ePlantao(func, dt);
+        if(trabalha){ diasMes[func.id]++; totais[func.id]++; }
+        let cls = '';
+        if(trabalha && fds) cls='dia-T-fds';
+        else if(trabalha) cls='dia-T';
+        else if(fds) cls='dia-F-fds';
+        else cls='dia-F';
+        row += `<td><div class="dia-cell ${cls}">${trabalha?'T':'—'}</div></td>`;
+      }
+      row += '</tr>';
+      tbody += row;
+    });
+
+    // Resumo deste mês
+    let resumoMes = `<div style="margin-bottom:20px;"><div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px;">${MESES_NOMES[mes]} ${ano}</div><div class="resumo-grid">`;
+    funcionarios.forEach(func => {
+      const dias = diasMes[func.id];
+      const horas = func.tipo==='plantao' ? dias*12 : dias*8;
+      resumoMes += `<div class="resumo-card"><div class="r-nome">${func.nome}</div><div class="r-dias">${dias}</div><div class="r-horas">${dias} dias · ${horas}h est.</div></div>`;
+    });
+    resumoMes += '</div></div>';
+    htmlResumos += resumoMes;
+
+    htmlBlocos += `
+      <div class="mes-bloco">
+        <div class="mes-titulo">${MESES_NOMES[mes]} ${ano}</div>
+        <div class="cal-wrap">
+          <table class="cal-table">
+            <thead>${thead}</thead>
+            <tbody>${tbody}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  // Resumo consolidado se > 1 mês
+  if(qtdMeses > 1){
+    let resumoTotal = `<div style="margin-top:8px;padding-top:16px;border-top:2px solid #e8e8e4;"><div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px;">Total acumulado (${qtdMeses} meses)</div><div class="resumo-grid">`;
+    funcionarios.forEach(func => {
+      const dias = totais[func.id];
+      const horas = func.tipo==='plantao' ? dias*12 : dias*8;
+      resumoTotal += `<div class="resumo-card" style="border-color:#c0ccfa;"><div class="r-nome">${func.nome}</div><div class="r-dias" style="color:#4a6cf7;">${dias}</div><div class="r-horas">${dias} dias · ${horas}h est.</div></div>`;
+    });
+    resumoTotal += '</div></div>';
+    htmlResumos += resumoTotal;
+  }
+
+  const mesFim = (mesInicio + qtdMeses - 1) % 12;
+  const anoFim = anoInicio + Math.floor((mesInicio + qtdMeses - 1) / 12);
+  const labelPeriodo = qtdMeses===1
+    ? `${MESES_NOMES[mesInicio]} ${anoInicio}`
+    : `${MESES_NOMES[mesInicio]} ${anoInicio} – ${MESES_NOMES[mesFim]} ${anoFim}`;
+
+  document.getElementById('titulo-resultado').textContent = `Escala — ${labelPeriodo}`;
+  document.getElementById('titulo-resumo').textContent = `Resumo — ${labelPeriodo}`;
+  document.getElementById('blocos-meses').innerHTML = htmlBlocos;
+  document.getElementById('blocos-resumo').innerHTML = htmlResumos;
+  document.getElementById('resultado').style.display = '';
+  document.getElementById('resultado').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+document.getElementById('inp-nome').addEventListener('keydown', e=>{ if(e.key==='Enter') adicionarFunc(); });
+</script>
+</body>
+</html>
